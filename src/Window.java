@@ -60,7 +60,7 @@ public class Window extends JPanel {
                     square * 5, height - (4 * square));
 
         g.drawLine( square * 5, height - (4 * square),
-                    width - (5 * square) - 10 * square, height - (4 * square));
+                square * 5+(Logic.dayCounter*square), height - (4 * square));
 
         int counter = 0;
         double growth = 63.0;
@@ -70,7 +70,7 @@ public class Window extends JPanel {
             if (counter % 2 == 0) {
                 g.drawOval(5 * square - 9, y, 18, 0);
                 g.drawString((growth) + "k $", 5 * square - 50, y - 5);
-                growth -= 1;
+                growth -= 2;
             }
             counter++;
         }
