@@ -2,17 +2,19 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.util.*;
-import java.io.*;
-import java.net.*;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
+import java.util.*;
 
 
-
-public class Logic {
+public class PriceUtil {
 
     public static int dayCounter = 0;
     static URL infoCurrentPrice;
@@ -45,9 +47,9 @@ public class Logic {
     }
 
     static JSONObject getPricesHistoryFromJSON() throws IOException, ParseException {
-        try (InputStream in = infoHistory.openStream()) {
-            Files.copy(in, Paths.get("resources\\bitcoinHistoryPrice.json"), StandardCopyOption.REPLACE_EXISTING);
-        }
+//        try (InputStream in = infoHistory.openStream()) {
+//            Files.copy(in, Paths.get("resources\\bitcoinHistoryPrice.json"), StandardCopyOption.REPLACE_EXISTING);
+//        }
         JSONParser parser = new JSONParser();
         FileReader reader = new FileReader("resources\\bitcoinHistoryPrice.json");
         Object obj = parser.parse(reader);
@@ -55,29 +57,40 @@ public class Logic {
         return (JSONObject) obj;
     }
 
-    static void getHistory() throws IOException, ParseException {
-        int milliSecondOfDay = 86400000;
-        JSONObject bitCoinHistory = (JSONObject) Logic.getPricesHistoryFromJSON().get("bpi");
-        String pattern = "yyyy-MM-dd";
-        SimpleDateFormat formatter = new SimpleDateFormat(pattern, Locale.getDefault());
+    Date getPreviousDay(Calendar date){
+        date.setTimeInMillis(date.getTimeInMillis() - 86400000);
+        return date.getTime();
+    }
 
-        Date bufferDate;
-        String sDate;
-        Calendar calendar = new GregorianCalendar();
-        while(true){
-            calendar.setTimeInMillis(calendar.getTimeInMillis() - milliSecondOfDay);
-            bufferDate = calendar.getTime();
-            sDate = formatter.format(bufferDate);
-            Double prices = (Double) bitCoinHistory.get(sDate);
-            if(prices != null){
-                dayCounter++;
-                history.put(sDate, prices);
-            }
-            if(prices == null){
-                return;
-            }
+    String getFormattedDateOnly(Date date){
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        return formatter.format(date);
+    }
+
+    Double getDailyPriceFromJson(Date date){
+        try {
+            JSONObject bitCoinHistory = (JSONObject) PriceUtil.getPricesHistoryFromJSON().get("bpi");
+            return (Double) bitCoinHistory.get(getFormattedDateOnly(date));
+        } catch (IOException | ParseException ex) {
+            ex.printStackTrace();
+            return 0.0;
         }
 
     }
-    
+
+    void getHistory() {
+        Calendar todayDate = new GregorianCalendar(2021, Calendar.MARCH,13);
+//        Calendar todayDate = new GregorianCalendar();
+        Date dayBefore;
+        while (true) {
+            dayBefore = getPreviousDay(todayDate);
+            Double dayBeforePrice = getDailyPriceFromJson(dayBefore);
+            if (dayBeforePrice != null) {
+                dayCounter++;
+                history.put(getFormattedDateOnly(dayBefore), dayBeforePrice);
+            } else {
+                break;
+            }
+        }
+    }
 }
