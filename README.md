@@ -1,8 +1,12 @@
 # BitcoinPriceTracker
+<br/> CURRENTLY APP IS NOT WORKING BECAUSE OF BROKEN ENDPOINT OF PRICES HUSTORY<br/>
+Simple application, that gets information from free API https://coindesk.com/ <br/>
+Shows bitcoin price at the current moment and prices history during one month. <br/>
+Renders graphic of history prices. <br/>
+Used JSONsimple library and standard Java AWT,SWING libraries. <br/> <br/>
 
-Simple program, which get information from free API about bitcoin price. Shows bitcoin price on this moment and get history prices during one month ago
-Making graphic of history prices.
-Used JSONsimple library and standart Java AWT,SWING libraries.
+Current USD price link - https://api.coindesk.com/v1/bpi/currentprice/USD.json <br/>
+Prices history link - https://api.coindesk.com/v1/bpi/historical/close.json
 
 
 ![alt tag](resources/BitcoinPriceTracker.png "Program screenshot")

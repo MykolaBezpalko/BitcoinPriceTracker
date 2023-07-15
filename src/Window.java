@@ -9,7 +9,7 @@ import java.util.Map;
 public class Window extends JPanel {
     static int square = 20;
     static int height = square * 30;
-    static int width = (square * Logic.dayCounter) + (square * 20);
+    static int width = (square * PriceUtil.dayCounter) + (square * 20);
 
     static void openWindow(Window window) {
         JFrame frame = new JFrame("Bitcoin Price Viev");
@@ -45,12 +45,12 @@ public class Window extends JPanel {
     }
 
     public void drawCurrentPrice(Graphics g) throws Exception {
-        JSONObject bpiCurrent = (JSONObject) Logic.getCurrentPriceInfo().get("bpi");
+        JSONObject bpiCurrent = (JSONObject) PriceUtil.getCurrentPriceInfo().get("bpi");
         JSONObject usd = (JSONObject) bpiCurrent.get("USD");
         double price = (double) usd.get("rate_float");
         Color customColor = new Color(137, 6, 6);
         g.setColor(customColor);
-        g.drawString("Today: " + Logic.getTimeInfo() + " --->  " + price + " USD", square * 5, square * 4);
+        g.drawString("Today: " + PriceUtil.getTimeInfo() + " --->  " + price + " USD", square * 5, square * 4);
     }
 
     public void drawGraphicBody(Graphics g) {
@@ -60,7 +60,7 @@ public class Window extends JPanel {
                     square * 5, height - (4 * square));
 
         g.drawLine( square * 5, height - (4 * square),
-                square * 5+(Logic.dayCounter*square), height - (4 * square));
+                square * 5+(PriceUtil.dayCounter*square), height - (4 * square));
 
         int counter = 0;
         double growth = 63.0;
@@ -78,7 +78,7 @@ public class Window extends JPanel {
 
     public void drawDates(Graphics g) {
         int counter = 0;
-        Iterator<Map.Entry<String, Double>> mapIterator = Logic.historyMap.entrySet().iterator();
+        Iterator<Map.Entry<String, Double>> mapIterator = PriceUtil.history.entrySet().iterator();
         for (int x = square * 6; x < width - (6 * square) - 10 * square; x += square) {
 
             g.drawOval(x, height - (4 * square) - 3, 0, 6);
@@ -101,7 +101,7 @@ public class Window extends JPanel {
     }
 
     public void drawGraphic(Graphics g) {
-        Iterator<Map.Entry<String, Double>> mapIterator = Logic.historyMap.entrySet().iterator();
+        Iterator<Map.Entry<String, Double>> mapIterator = PriceUtil.history.entrySet().iterator();
         int zeroX = square * 6;
         int zeroY = height - (square * 4);
         int endX = square * 6;
